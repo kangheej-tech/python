@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>파이썬 확인학습 (1학년 2학기)</title>
+<style>
+:root{
+  --bg:#f5f6f8; --card:#fff; --ink:#1d2330; --muted:#667085; --line:#e2e5ea;
+  --accent:#2f5bea; --accent-soft:#eaf0ff; --code-bg:#f7f8fa;
+  --ok:#12805c; --ok-soft:#e6f6ef; --bad:#c7362b; --bad-soft:#fdecea;
+  --mono: "D2Coding","Consolas","Menlo","Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14161b; --card:#1d2027; --ink:#e7e9ee; --muted:#9aa1ad; --line:#2e323b;
+    --accent:#7d9bff; --accent-soft:#232c45; --code-bg:#171a20;
+    --ok:#4cc592; --ok-soft:#173327; --bad:#ff7b70; --bad-soft:#3a1f1d;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  line-height:1.55;font-size:15px}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 120px}
+header.top{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px 18px;margin-bottom:22px}
+header.top h1{margin:0 0 4px;font-size:24px;letter-spacing:-.5px}
+header.top p{margin:0;color:var(--muted);font-size:14px}
+.student{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}
+.student label{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted)}
+.student input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;width:70px}
+.student input.name{width:140px}
+h2{font-size:18px;margin:34px 0 6px}
+.qdesc{color:var(--muted);margin:0 0 14px;font-size:14.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:14px}
+@media (max-width:520px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;position:relative;transition:border-color .2s,background .2s}
+.card.ok{border-color:var(--ok);background:linear-gradient(0deg,var(--ok-soft),var(--card) 55%)}
+.card.bad{border-color:var(--bad);background:linear-gradient(0deg,var(--bad-soft),var(--card) 55%)}
+.card .num{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;border-radius:8px;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:14px;margin-bottom:8px}
+.mark{position:absolute;top:10px;right:14px;font-weight:800;font-size:22px}
+.card.ok .mark{color:var(--ok)} .card.bad .mark{color:var(--bad)}
+pre.code{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+  font-family:var(--mono);font-size:14px;line-height:1.7;overflow-x:auto;white-space:pre}
+.lbl{font-size:12.5px;font-weight:700;color:var(--muted);margin:10px 0 4px}
+textarea.out{width:100%;min-height:62px;resize:vertical;font-family:var(--mono);font-size:14px;line-height:1.5;
+  padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+textarea.out:focus,input.blank:focus,.student input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+input.blank{font-family:var(--mono);font-size:14px;padding:1px 6px;margin:0 2px;border:none;border-bottom:2px solid var(--accent);
+  background:var(--accent-soft);color:var(--ink);border-radius:4px 4px 0 0;min-width:4ch}
+input.blank.ok{border-bottom-color:var(--ok);background:var(--ok-soft)}
+input.blank.bad{border-bottom-color:var(--bad);background:var(--bad-soft)}
+.given{margin:0;background:var(--code-bg);border:1px dashed var(--line);border-radius:8px;padding:8px 12px;font-family:var(--mono);font-size:14px;white-space:pre}
+.answer{display:none;margin-top:8px;font-size:13.5px;border-left:3px solid var(--accent);padding:4px 10px;background:var(--accent-soft);border-radius:0 6px 6px 0}
+.answer pre{margin:2px 0 0;font-family:var(--mono);white-space:pre-wrap}
+body.show-ans .answer{display:block}
+.cond{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:12px;font-size:14.5px}
+.cond b{display:block;margin-bottom:4px}
+.cond ol{margin:0;padding-left:20px}
+.row2{display:grid;grid-template-columns:1fr 280px;gap:14px}
+@media (max-width:760px){.row2{grid-template-columns:1fr}}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:12px 16px;z-index:10}
+.bar .in{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:inherit;font-weight:700;border-radius:10px;padding:9px 16px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:disabled{opacity:.5;cursor:default}
+#status{color:var(--muted);font-size:14px;flex:1;min-width:180px}
+#score{font-weight:800;font-size:16px}
+.note{font-size:12.5px;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>1학년 2학기 정보 · 파이썬 확인학습</h1>
+    <p>문제를 풀고 아래의 <b>채점하기</b> 버튼을 누르세요. 채점 후 틀린 문제를 고쳐서 다시 채점할 수 있어요.</p>
+    <div class="student">
+      <label>1학년 <input id="sBan" inputmode="numeric" placeholder=""> 반</label>
+      <label><input id="sNum" inputmode="numeric" placeholder=""> 번</label>
+      <label>이름 <input id="sName" class="name" placeholder="이름"></label>
+    </div>
+  </header>
+
+  <h2>[문제1] 다음 프로그램의 빈칸 채우기나 실행 결과를 각각 작성하시오.</h2>
+  <p class="qdesc">실행 결과가 여러 줄이면 줄을 바꿔서(Enter) 쓰세요.</p>
+  <div class="grid" id="p1"></div>
+
+  <h2>[문제2] 끝말잇기 게임 프로그램 완성하기</h2>
+  <p class="qdesc">플레이어는 이전 단어의 마지막 글자로 시작하는 새로운 단어를 입력해야 한다. 단, 같은 단어를 반복하거나 끝음절과 첫음절이 맞지 않는 단어를 입력하면 게임이 종료된다. 빈칸을 채워 프로그램을 완성하시오. (교과서 단원평가(159쪽) 풀이 참고)</p>
+  <div class="row2" id="p2"></div>
+
+  <h2>[문제3] 건강등급 판단 프로그램 완성하기</h2>
+  <p class="qdesc">걸음 수와 물 섭취량을 기준으로 건강등급을 판단하는 프로그램이다. 아래 조건을 만족하도록 실행 결과를 참고하여 빈칸을 작성하시오.</p>
+  <div class="cond">
+    <b>&lt;조건&gt;</b>
+    <ol>
+      <li>걸음 수와 물 섭취량을 한 번에 입력받는다.</li>
+      <li>걸음 수는 정수형, 물 섭취량은 실수형으로 변환한다.</li>
+      <li>건강등급 판단<br>
+        · 걸음 수 ≥ 10 이고 물 섭취량 ≥ 2.0 이면 → "건강 최우수"<br>
+        · 그렇지 않고, 걸음 수 ≥ 7 이거나 물 섭취량 ≥ 1.5 이면 → "건강 우수"<br>
+        · 그렇지 않고, 걸음 수 &gt; 0 이고 물 섭취량 &gt; 0 이면 → "건강 보통"<br>
+        · 그 외의 경우 → "관리 필요"</li>
+      <li>건강 등급을 출력한다.</li>
+    </ol>
+  </div>
+  <div class="row2" id="p3"></div>
+</div>
+
+<div class="bar"><div class="in">
+  <button class="primary" id="btnGrade">채점하기</button>
+  <button id="btnAns" disabled>정답 보기</button>
+  <span id="status">총 35문항 (문제1: 24, 문제2: 4, 문제3: 7)</span>
+  <span id="score"></span>
+</div></div>
+
+<script>
+/* ---------------- 문제 데이터 ---------------- */
+// type 'out' : 실행결과 작성 / type 'blank' : 빈칸 채우기 ([[0]], [[1]] ...)
+const P1 = [
+ {n:1, code:`print("2+5-1")`, out:`2+5-1`},
+ {n:2, code:`print(5*3)\nprint("01"*3)`, out:`15\n010101`},
+ {n:3, code:`print('운정', end='')\nprint('고')`, out:`운정고`},
+ {n:4, code:`print('운정\\n고')`, out:`운정\n고`},
+ {n:5, code:`print((30==30) and (10>20))\nprint((10>5) or (3**2==9))\nprint(not(25==20))`, out:`False\nTrue\nTrue`},
+ {n:6, code:`x, y, z = 5, 15, 25\nx=z-y-x\ny//=2\nz%=5\nprint(x+y+z)`, out:`12`},
+ {n:7, code:`x, y, z = 2, 4, 6\nx+=y\ny*=z\nprint(x+y)`, out:`30`},
+ {n:8, code:`a, b, c = 5, 10, 15\nc-=a+b\na+=2\nprint(a+c)`, out:`7`},
+ {n:9, code:`s = ['A', 'B', 'C', 'D', 'E', 'F', 'G']\nprint(s[0]+s[2]+s[-1])`, out:`ACG`},
+ {n:10, code:`s = ['0', '1', '2', '3', '4', '5']\nprint(s[1]+s[3]+s[5])`, out:`135`},
+ {n:11, code:`a = [1,2,3,4,5]\nprint(a[1:3])`, out:`[2, 3]`},
+ {n:12, code:`a = [2,4,6,8,10]\nprint(a[-4:-2])`, out:`[4, 6]`},
+ {n:13, code:`li=['a','b','c','d','e']\nprint(len(li))`, out:`5`},
+ {n:14, code:`date = '2021-03-28 일요일'\na=date.split('0')\nprint(a[1])`, out:`21-`},
+ {n:15, code:`planet = [["수성", 2440, 0.055],\n          ["금성", 6052, 0.815],\n          ["지구", 6378, 1.0]]\nprint(planet[1][2])`, out:`0.815`},
+ {n:16, code:`data = [ [1,'미국',46,37,38,121],\n         [2,'영국',27,23,17,67],\n         [3,'중국',26,18,26,70]]\nprint(data[2][3])`, out:`18`},
+ {n:17, code:`A = [3, 1, 4, 1, 5]\nA.sort()\nprint(A[1:])`, out:`[1, 3, 4, 5]`},
+ {n:18, code:`B = [10, 2, 33, 4]\nB.sort(reverse=True)\nprint(B[:2])`, out:`[33, 10]`},
+ {n:19, code:`animals=['호랑이','사자','곰','여우','토끼']\nanimals.remove('곰')\nanimals.insert(0, '늑대')\nanimals.pop()\nprint(animals[2])`, out:`사자`},
+ {n:20, code:`for i in range(4):\n  if i == 0:\n    print('시작')\n  elif i == 3:\n    print('끝')\n  else:\n    print(i)`, out:`시작\n1\n2\n끝`},
+ {n:21, code:`for a in range(9, 1, -2):\n    print(a, end=' ')`, out:`9 7 5 3`},
+ {n:22, code:`a = 10\nwhile 1:\n    if a < 6:\n        break\n    a = a - 1\nprint(a)`, out:`5`},
+ {n:23, blank:true,
+  code:`for i in range(6,0,-1):\n    for j in [[0]]:\n        print(' ',end='')\n    for j in [[1]]:\n        print(i,end='')\n    print()`,
+  given:`66666666666\n 555555555\n  4444444\n   33333\n    222\n     1`,
+  ans:['range(i,6)','range(0,i*2-1)'],
+  alt:[['range(i,6)','range(i,6,1)'],['range(0,i*2-1)','range(i*2-1)','range(0,2*i-1)','range(2*i-1)','range(0,i+i-1)','range(i+i-1)']],
+  colonOutside:true},
+ {n:24, blank:true,
+  code:`for i in range(1,6):\n    for j in [[0]]:\n        print(' ',end='')\n    for j in [[1]]:\n        print('*',end='')\n    print()`,
+  given:`    *\n   **\n  ***\n ****\n*****`,
+  ans:['range(1,6-i)','range(1,i+1)'],
+  alt:[['range(1,6-i)','range(5-i)','range(0,5-i)','range(i,5)','range(i+1,6)'],['range(1,i+1)','range(i)','range(0,i)']],
+  colonOutside:true}
+];
+
+const P2 = {
+  code:
+`word=list()
+start=input('시작 단어: ')
+word.append(start)
+count=0
+while [[0]]:                    # 1. 무한반복
+    temp = input('단어 입력: ')
+    if [[1]] and temp not in word:
+        # 2. 입력단어의 첫음절이 이전단어의 끝음절과 같고, 새로운 단어인 경우
+        [[2]]                    # 3. 리스트에 단어를 추가
+        count=count+1
+    else:
+        [[3]]                    # 4. 반복문 종료
+print('총 성공 횟수: ',count)
+print('게임 종료!')`,
+  ans:['True','temp[0] == word[-1][-1]','word.append(temp)','break'],
+  alt:[['True','1'],
+       ["temp[0]==word[-1][-1]","word[-1][-1]==temp[0]","temp[0]==word[len(word)-1][-1]","word[len(word)-1][-1]==temp[0]","temp[0]==word[-1][len(word[-1])-1]"],
+       ["word.append(temp)","word+=[temp]","word=word+[temp]"],
+       ["break"]],
+  given:`시작 단어: 사과\n단어 입력: 과수원\n단어 입력: 사슴\n총 성공 횟수:  1\n게임 종료!`,
+  tests:[['사과','과수원','사슴'],['기러기','기러기'],['사과','과자','자두','두부','부리','과일'],['나무','무지개','개나리','리본','본','나무'],['바다','다리','리본','본','바다']]
+};
+
+const P3 = {
+  code:
+`walk, water = input("하루 걸음 수(천 단위)와 물 섭취량(L)을 입력하세요: ").[[0]]   #1
+walk = [[1]](walk)      #2
+water = [[2]](water)    #3
+
+if [[3]]:       #4 조건식
+    grade = '건강 최우수'
+elif [[4]]:     #5 조건식
+    grade = '건강 우수'
+elif [[5]]:     #6 조건식
+    grade = '건강 보통'
+[[6]]           #7
+    grade = '관리 필요'
+
+print('\\n[ 오늘의 건강 등급 ]')
+print('='*20)
+print(f"판정: {grade}")`,
+  ans:['split()','int','float','walk >= 10 and water >= 2.0','walk >= 7 or water >= 1.5','walk > 0 and water > 0','else:'],
+  alt:[['split()',"split(' ')"],['int'],['float'],
+       ['walk>=10andwater>=2','water>=2andwalk>=10','10<=walkand2<=water','(walk>=10)and(water>=2)'],
+       ['walk>=7orwater>=1.5','water>=1.5orwalk>=7','7<=walkor1.5<=water','(walk>=7)or(water>=1.5)'],
+       ['walk>0andwater>0','water>0andwalk>0','0<walkand0<water','(walk>0)and(water>0)'],
+       ['else']],
+  colonOutside:[3,4,5], colonInside:[6],
+  given:`하루 걸음 수(천 단위)와 물 섭취량(L)을 입력하세요: 5 0.4\n\n[ 오늘의 건강 등급 ]\n====================\n판정: 건강 보통`,
+  tests:['5 0.4','10 2.0','10 1.0','3 1.5','7 0.5','0 0.5','3 0','12 3','9 1.9','0 0','6 1.4','15 2.5','10 1.5','1 0.1']
+};
+
+/* ---------------- 렌더링 ---------------- */
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function codeWithBlanks(code, id, answers){
+  return esc(code).replace(/\[\[(\d+)\]\]/g,(m,k)=>{
+    const w = Math.max(8, answers[k].length + 3);
+    return `<input class="blank" data-q="${id}" data-k="${k}" style="width:${w}ch" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="빈칸 ${+k+1}">`;
+  });
+}
+const p1 = document.getElementById('p1');
+P1.forEach(q=>{
+  const el = document.createElement('div');
+  el.className='card'; el.id='c1-'+q.n;
+  if(q.blank){
+    el.innerHTML = `<span class="num">${q.n}</span><span class="mark"></span>
+      <div class="lbl">프로그램 (빈칸 채우기)</div>
+      <pre class="code">${codeWithBlanks(q.code,'1-'+q.n,q.ans)}</pre>
+      <div class="lbl">실행결과</div><pre class="given">${esc(q.given)}</pre>
+      <div class="answer">정답<pre>① ${esc(q.ans[0])}\n② ${esc(q.ans[1])}</pre></div>`;
+  }else{
+    el.innerHTML = `<span class="num">${q.n}</span><span class="mark"></span>
+      <div class="lbl">프로그램</div><pre class="code">${esc(q.code)}</pre>
+      <div class="lbl">실행결과</div>
+      <textarea class="out" id="o1-${q.n}" spellcheck="false" placeholder="실행 결과를 쓰세요"></textarea>
+      <div class="answer">정답<pre>${esc(q.out)}</pre></div>`;
+  }
+  p1.appendChild(el);
+});
+function renderBig(target, P, id){
+  const box = document.getElementById(target);
+  const ansList = P.ans.map((a,i)=>`${'①②③④⑤⑥⑦'[i]} ${esc(a)}`).join('\n');
+  box.innerHTML = `<div class="card" id="c${id}"><span class="mark"></span>
+      <div class="lbl">프로그램</div><pre class="code">${codeWithBlanks(P.code,id,P.ans)}</pre>
+      <div class="answer">정답<pre>${ansList}</pre></div></div>
+    <div class="card"><div class="lbl">실행결과 예시</div><pre class="given" style="white-space:pre-wrap">${esc(P.given)}</pre>
+      <div class="note">빈칸마다 1문항씩 채점합니다. 빈칸 번호는 위에서부터 차례대로 ①, ②, ③ … 입니다.</div></div>`;
+}
+renderBig('p2',P2,'2'); renderBig('p3',P3,'3');
+
+// 여러 줄 입력칸 자동 높이
+document.querySelectorAll('textarea.out').forEach(t=>t.addEventListener('input',()=>{t.style.height='auto';t.style.height=(t.scrollHeight+2)+'px'}));
+
+/* ---------------- 채점 도우미 ---------------- */
+const normOut = s => s.replace(/\r/g,'').split('\n').map(l=>l.replace(/\s+/g,'')).filter(l=>l).join('\n');
+const normCode = s => s.replace(/\s+/g,'').replace(/"/g,"'").replace(/:+$/,'').replace(/(\d+)\.0(?!\d)/g,'$1');
+const blanks = id => [...document.querySelectorAll(`input.blank[data-q="${id}"]`)];
+const strMatch = (v,alts) => { const n=normCode(v); return n!=='' && alts.some(a=>normCode(a)===n); };
+
+function fill(code, vals, opt={}){
+  return code.replace(/\[\[(\d+)\]\]/g,(m,k)=>{
+    k=+k; let v=vals[k].trim();
+    if(opt.all || (opt.outside||[]).includes(k)) v=v.replace(/:+\s*$/,'');
+    if((opt.inside||[]).includes(k) && !/:\s*$/.test(v)) v=v+':';
+    return v;
+  });
+}
+
+/* ---------------- 파이썬(Pyodide) 로딩 ---------------- */
+let pyPromise=null;
+function loadPy(){
+  if(pyPromise) return pyPromise;
+  pyPromise = new Promise((resolve)=>{
+    const timer=setTimeout(()=>resolve(null),25000);
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/pyodide@0.26.4/pyodide.js';
+    s.onload=async()=>{
+      try{
+        const py=await loadPyodide({indexURL:'https://cdn.jsdelivr.net/npm/pyodide@0.26.4/'});
+        py.runPython(`
+import builtins, io, sys
+def _run(src, inputs):
+    it = iter(list(inputs))
+    buf = io.StringIO()
+    def _inp(prompt=''):
+        try: return next(it)
+        except StopIteration: raise RuntimeError('입력 부족')
+    def _pr(*a, **k):
+        k.pop('file', None); builtins.print(*a, file=buf, **k)
+    steps = [0]
+    def _tr(frame, ev, arg):
+        steps[0] += 1
+        if steps[0] > 300000: raise RuntimeError('시간 초과')
+        return _tr
+    g = {'__builtins__': builtins, 'input': _inp, 'print': _pr}
+    sys.settrace(_tr)
+    try:
+        exec(compile(src, '<학생코드>', 'exec'), g)
+        return 'OK\\n' + buf.getvalue()
+    except BaseException as e:
+        return 'ERR\\n' + type(e).__name__
+    finally:
+        sys.settrace(None)
+`);
+        clearTimeout(timer); resolve(py);
+      }catch(e){clearTimeout(timer); resolve(null);}
+    };
+    s.onerror=()=>{clearTimeout(timer); resolve(null);};
+    document.head.appendChild(s);
+  });
+  return pyPromise;
+}
+function pyRun(py, src, inputs){
+  const f=py.globals.get('_run'); const inp=py.toPy(inputs);
+  try{ return f(src, inp); } finally{ inp.destroy(); f.destroy(); }
+}
+// 학생 프로그램을 여러 입력으로 실행해 정답 프로그램과 출력이 같은지 확인
+function sameBehavior(py, studentSrc, refSrc, testList){
+  for(const t of testList){
+    const a=pyRun(py, studentSrc, t), b=pyRun(py, refSrc, t);
+    if(a!==b || a.startsWith('ERR')) return false;
+  }
+  return true;
+}
+
+/* ---------------- 채점 ---------------- */
+function setCard(card, ok){
+  card.classList.remove('ok','bad'); card.classList.add(ok?'ok':'bad');
+  card.querySelector('.mark').textContent = ok?'O':'X';
+}
+function markBlank(inp, ok){ inp.classList.remove('ok','bad'); inp.classList.add(ok?'ok':'bad'); }
+
+async function grade(){
+  const btn=document.getElementById('btnGrade'), st=document.getElementById('status');
+  btn.disabled=true;
+  const needPy = [...document.querySelectorAll('input.blank')].some(b=>b.value.trim()!=='');
+  let py=null;
+  if(needPy){
+    st.textContent='채점용 파이썬을 불러오는 중… (처음 한 번만 조금 걸려요)';
+    py=await loadPy();
+  }
+  let correct=0; const wrong=[];
+
+  // 문제1
+  P1.forEach(q=>{
+    const card=document.getElementById('c1-'+q.n); let ok;
+    if(q.blank){
+      const ins=blanks('1-'+q.n), vals=ins.map(i=>i.value);
+      let each=vals.map((v,k)=>strMatch(v,q.alt[k]));
+      if(py && vals.every(v=>v.trim()) && !each.every(x=>x)){
+        const good=sameBehavior(py, fill(q.code,vals,{all:true}), fill(q.code,q.ans,{all:true}), [[]]);
+        if(good) each=each.map(()=>true);
+      }
+      ins.forEach((inp,k)=>markBlank(inp,each[k]));
+      ok=each.every(x=>x);
+    }else{
+      const v=document.getElementById('o1-'+q.n).value;
+      ok = normOut(v)!=='' && normOut(v)===normOut(q.out);
+    }
+    setCard(card,ok); if(ok) correct++; else wrong.push('1-'+q.n);
+  });
+
+  // 문제2, 3 (빈칸 1개당 1문항)
+  [[P2,'2',{outside:[0,1]}, P2.tests],[P3,'3',{outside:P3.colonOutside, inside:P3.colonInside}, P3.tests.map(t=>[t])]].forEach(([P,id,opt,tests])=>{
+    const ins=blanks(id), vals=ins.map(i=>i.value);
+    let each=vals.map((v,k)=>strMatch(v,P.alt[k]));
+    if(py && vals.every(v=>v.trim()) && !each.every(x=>x)){
+      if(sameBehavior(py, fill(P.code,vals,opt), fill(P.code,P.ans,opt), tests)) each=each.map(()=>true);
+    }
+    ins.forEach((inp,k)=>markBlank(inp,each[k]));
+    each.forEach((ok,k)=>{ if(ok) correct++; else wrong.push(id+'-'+(k+1)); });
+    setCard(document.getElementById('c'+id), each.every(x=>x));
+  });
+
+  const total=35, score=Math.round(correct/total*100);
+  document.getElementById('score').textContent=`${correct} / ${total} 맞음 · ${score}점`;
+  const who=[document.getElementById('sBan').value&&document.getElementById('sBan').value+'반',
+             document.getElementById('sNum').value&&document.getElementById('sNum').value+'번',
+             document.getElementById('sName').value].filter(Boolean).join(' ');
+  st.textContent = (who?who+' · ':'') + (wrong.length? '빨간색 표시된 문제를 다시 확인해 보세요.' : '모두 맞았어요! 🎉')
+    + (needPy && !py ? ' (인터넷 연결이 없어 빈칸은 대표 답안과 비교해 채점했어요)' : '');
+  btn.disabled=false; btn.textContent='다시 채점하기';
+  document.getElementById('btnAns').disabled=false;
+}
+document.getElementById('btnGrade').addEventListener('click',grade);
+document.getElementById('btnAns').addEventListener('click',e=>{
+  const on=document.body.classList.toggle('show-ans');
+  e.target.textContent = on?'정답 숨기기':'정답 보기';
+});
+</script>
+</body>
+</html>
