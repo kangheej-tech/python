@@ -132,7 +132,7 @@ button:disabled{opacity:.5;cursor:default}
 <div class="bar"><div class="in">
   <button class="primary" id="btnGrade">채점하기</button>
   <button id="btnAns" disabled>정답 보기</button>
-  <span id="status">총 45문항 (문제1: 25, 문제2: 3, 문제3: 4, 문제4: 7, 문제5: 2, 문제6: 4)</span>
+  <span id="status">총 46문항 (문제1: 26, 문제2: 3, 문제3: 4, 문제4: 7, 문제5: 2, 문제6: 4)</span>
   <span id="score"></span>
 </div></div>
 
@@ -161,15 +161,16 @@ const P1 = [
  {n:19, code:`animals=['호랑이','사자','곰','여우','토끼']\nanimals.remove('곰')\nanimals.insert(0, '늑대')\nanimals.pop()\nprint(animals[2])`, out:`사자`},
  {n:20, code:`for i in range(4):\n  if i == 0:\n    print('시작')\n  elif i == 3:\n    print('끝')\n  else:\n    print(i)`, out:`시작\n1\n2\n끝`},
  {n:21, code:`for a in range(9, 1, -2):\n    print(a, end=' ')`, out:`9 7 5 3`},
- {n:22, code:`a = 10\nwhile 1:\n    if a < 6:\n        break\n    a = a - 1\nprint(a)`, out:`5`},
- {n:23, code:`a = 10\nwhile 1:\n    if a < 6:\n        break\n    a = a - 1\n    print(a)`, out:`9\n8\n7\n6\n5`},
- {n:24, blank:true,
+ {n:22, code:`total = 0\nfor i in range(1, 5):\n    total += i\nprint(total)`, out:`10`},
+ {n:23, code:`a = 10\nwhile 1:\n    if a < 6:\n        break\n    a = a - 1\nprint(a)`, out:`5`},
+ {n:24, code:`a = 10\nwhile 1:\n    if a < 6:\n        break\n    a = a - 1\n    print(a)`, out:`9\n8\n7\n6\n5`},
+ {n:25, blank:true,
   code:`for i in range(6,0,-1):\n    for j in [[0]]:\n        print(' ',end='')\n    for j in [[1]]:\n        print(i,end='')\n    print()`,
   given:`66666666666\n 555555555\n  4444444\n   33333\n    222\n     1`,
   ans:['range(i,6)','range(0,i*2-1)'],
   alt:[['range(i,6)','range(i,6,1)'],['range(0,i*2-1)','range(i*2-1)','range(0,2*i-1)','range(2*i-1)','range(0,i+i-1)','range(i+i-1)']],
   colonOutside:true},
- {n:25, blank:true,
+ {n:26, blank:true,
   code:`for i in range(1,6):\n    for j in [[0]]:\n        print(' ',end='')\n    for j in [[1]]:\n        print('*',end='')\n    print()`,
   given:`    *\n   **\n  ***\n ****\n*****`,
   ans:['range(1,6-i)','range(1,i+1)'],
@@ -461,7 +462,7 @@ async function grade(){
     setCard(document.getElementById('c5'), each.every(x=>x));
   }
 
-  const total=45, score=Math.round(correct/total*100);
+  const total=46, score=Math.round(correct/total*100);
   document.getElementById('score').textContent=`${correct} / ${total} 맞음 · ${score}점`;
   const who=[document.getElementById('sBan').value&&document.getElementById('sBan').value+'반',
              document.getElementById('sNum').value&&document.getElementById('sNum').value+'번',
